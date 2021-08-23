@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
-import java.time.LocalDate
-import java.time.Period
-import java.time.Year
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,37 +14,39 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun Calcular(view: View) {
+    fun Calcular(view: View ) {
 
-        var fecha1 = findViewById<EditText>(R.id.etFecha1).text.toString();
-        var fecha2 = findViewById<EditText>(R.id.etFecha2).text.toString();
+        var fechaInicio = findViewById<EditText>(R.id.etFecha1).text.toString();
+        var fechaFin = findViewById<EditText>(R.id.etFecha2).text.toString();
 
-        val listDate1 = fecha1.split("/")
-        var year1 = listDate1[0].toInt()
-        var moth1 = listDate1[1].toInt()
-        var day1 = listDate1[2].toInt()
+        //Obtencion del salario mensual
+        var etsalaryMonth = findViewById<EditText>(R.id.idSalaryMoth).text.toString();
+        var salaryMonth = etsalaryMonth!!.toDouble();
 
-        val listDate2 = fecha2.split("/")
-        var year2 = listDate2[0].toInt()
-        var moth2 = listDate2[1].toInt()
-        var day2 = listDate2[2].toInt()
+        var antiguedad = Antiguedad(fechaInicio, fechaFin);
+        antiguedad.calcular();
 
-        var datestart = LocalDate.of(year1, moth1, day1);
-        var dateEnd = LocalDate.of(year2, moth2, day2);
-
-        var antiguedad = Period.between(datestart, dateEnd);
+        var indemnizacion =
+            Indemnizacion(antiguedad); //verificar la manera correcta de hacer una instancia la clase Indemnizacion
+        indemnizacion.calcular();
+        var totaldias = indemnizacion.diasIndemnizacion;
 
         var Result1 = findViewById<TextView>(R.id.Result1)
-        Result1.setText(antiguedad.years.toString());
+        Result1.setText("Años " + antiguedad.years.toString() + ",Meses " + antiguedad.months.toString() + ",Dias " + antiguedad.days.toString());
 
-        var Result2 = findViewById<TextView>(R.id.Result2)
-        Result2.setText(antiguedad.months.toString());
+        var Resultado4 = findViewById<TextView>(R.id.result4)
+        Resultado4.setText(totaldias.toString());
 
-        var Result3 = findViewById<TextView>(R.id.Result3)
-        Result3.setText(antiguedad.days.toString());
 
+        //calcular salario con forme a dias de idemnizacion
+        var salaryForDays = salaryMonth / 30;
+        var salaryForIndemnizacion = salaryForDays * totaldias;
+
+        var Resultado5 = findViewById<TextView>(R.id.Result5)
+        Resultado5.setText(salaryForIndemnizacion.toString())
 
 
 
     }
 }
+
